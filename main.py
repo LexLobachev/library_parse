@@ -7,25 +7,34 @@ from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filepath, sanitize_filename
 
 
-def get_book_name(book_id):
+def parse_book_page(book_id):
     url = f'https://tululu.org/b{book_id}/'
-    response = requests.get(url)
+    response = requests.get(url, allow_redirects=False)
+    check_for_redirect(response)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, 'lxml')
 
     books_title_tag = soup.find('td', class_='ow_px_td').find('div', id='content').find('h1')
     books_title = books_title_tag.text.split('::')
     books_title_text = books_title[0].strip()
-    print('Заголовок:', books_title_text)
+
     books_img = soup.find('div', class_='bookimage').find('img')['src']
     books_img_link = urljoin('https://tululu.org', books_img)
+
     books_comments_tag = soup.find('div', id='content').find_all('span', class_='black')
     books_comments = [comment.text for comment in books_comments_tag]
+
     books_genres_tag = soup.find('div', id='content').find('span', class_='d_book').find_all('a')
     books_genres = [genre.text for genre in books_genres_tag]
-    print(books_genres)
 
-    return books_title_text, books_img_link, books_comments, books_genres
+    book = {
+        'books_title': books_title_text,
+        'books_image': books_img_link,
+        'books_comments': books_comments,
+        'books_genres': books_genres
+    }
+
+    return book
 
 
 def check_for_redirect(response):
@@ -46,15 +55,13 @@ def download_image(url, folder='images/'):
         file.write(response.content)
 
 
-def download_txt(url, params, folder='books/'):
+def download_txt(url, params, book_name, folder='books/'):
     if not os.path.exists(folder):
         os.makedirs(folder)
 
     response = requests.get(url=url, params=params, allow_redirects=False)
     check_for_redirect(response)
     response.raise_for_status()
-    book_name, book_img, book_comments, book_genres = get_book_name(params['id'])
-    download_image(book_img)
 
     filename = f"{params['id']}. {book_name}.txt"
     filepath = sanitize_filepath(os.path.join(folder, sanitize_filename(filename)))
@@ -66,15 +73,18 @@ def download_txt(url, params, folder='books/'):
 
 def main():
     url = 'https://tululu.org/txt.php'
-    params = {
-        'id': 1
-    }
     for book_id in range(1, 11):
+        params = {
+            'id': book_id
+        }
         try:
-            download_txt(url, params)
+            book_info = parse_book_page(book_id)
+            book_name = book_info['books_title']
+            book_img = book_info['books_image']
+            download_txt(url, params, book_name)
+            download_image(book_img)
         except requests.exceptions.HTTPError:
             pass
-        params['id'] += 1
 
 
 if __name__ == '__main__':
