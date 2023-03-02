@@ -13,18 +13,19 @@ def get_book_name(book_id):
     response.raise_for_status()
     soup = BeautifulSoup(response.text, 'lxml')
 
-    book_tag = soup.find('td', class_='ow_px_td').find('div', id='content').find('h1')
-    book_title = book_tag.text.split('::')
-    book_title_text = book_title[0].strip()
-    print(book_title_text)
-    book_img = soup.find('div', class_='bookimage').find('img')['src']
-    book_img_link = urljoin('https://tululu.org', book_img)
-    book_comments_tag = soup.find('div', id='content').find_all('span', class_='black')
-    book_comments = [comment.text for comment in book_comments_tag]
-    for comment in book_comments:
-        print(comment)
+    books_title_tag = soup.find('td', class_='ow_px_td').find('div', id='content').find('h1')
+    books_title = books_title_tag.text.split('::')
+    books_title_text = books_title[0].strip()
+    print('Заголовок:', books_title_text)
+    books_img = soup.find('div', class_='bookimage').find('img')['src']
+    books_img_link = urljoin('https://tululu.org', books_img)
+    books_comments_tag = soup.find('div', id='content').find_all('span', class_='black')
+    books_comments = [comment.text for comment in books_comments_tag]
+    books_genres_tag = soup.find('div', id='content').find('span', class_='d_book').find_all('a')
+    books_genres = [genre.text for genre in books_genres_tag]
+    print(books_genres)
 
-    return book_title_text, book_img_link, book_comments
+    return books_title_text, books_img_link, books_comments, books_genres
 
 
 def check_for_redirect(response):
@@ -52,7 +53,7 @@ def download_txt(url, params, folder='books/'):
     response = requests.get(url=url, params=params, allow_redirects=False)
     check_for_redirect(response)
     response.raise_for_status()
-    book_name, book_img, book_comments = get_book_name(params['id'])
+    book_name, book_img, book_comments, book_genres = get_book_name(params['id'])
     download_image(book_img)
 
     filename = f"{params['id']}. {book_name}.txt"
@@ -78,4 +79,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # download_image("https://tululu.org/shots/10.jpg")
