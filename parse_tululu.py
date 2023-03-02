@@ -1,10 +1,17 @@
 import os
+import sys
+import argparse
 from urllib.parse import urljoin, urlsplit
 from urllib import parse
 
 import requests
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filepath, sanitize_filename
+
+
+parser = argparse.ArgumentParser(description='С какого номера по какой парсить книги?')
+parser.add_argument('start_id', nargs='?', default=1, help='С какого номера книги', type=int)
+parser.add_argument('end_id', nargs='?', default=10, help='По какой номер книги', type=int)
 
 
 def parse_book_page(book_id):
@@ -72,8 +79,11 @@ def download_txt(url, params, book_name, folder='books/'):
 
 
 def main():
+    args = parser.parse_args()
+    start_id = args.start_id
+    end_id = args.end_id + 1
     url = 'https://tululu.org/txt.php'
-    for book_id in range(1, 11):
+    for book_id in range(start_id, end_id):
         params = {
             'id': book_id
         }
