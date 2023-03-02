@@ -1,5 +1,4 @@
 import os
-import sys
 import argparse
 from urllib.parse import urljoin, urlsplit
 from urllib import parse
