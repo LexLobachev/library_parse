@@ -2,6 +2,7 @@ import os
 import argparse
 from urllib.parse import urljoin, urlsplit
 from urllib import parse
+import logging
 
 import requests
 from bs4 import BeautifulSoup
@@ -92,8 +93,8 @@ def main():
             book_img = book_info['books_image']
             download_txt(url, params, book_name)
             download_image(book_img)
-        except requests.exceptions.HTTPError:
-            pass
+        except requests.exceptions.HTTPError as ex:
+            logging.error(ex)
 
 
 if __name__ == '__main__':
