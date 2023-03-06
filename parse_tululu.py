@@ -60,8 +60,7 @@ def check_for_redirect(response):
 
 
 def download_image(url, folder='images/'):
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    os.makedirs(folder, exist_ok=True)
 
     try:
         response = requests.get(url=url)
@@ -78,8 +77,7 @@ def download_image(url, folder='images/'):
 
 
 def download_txt(url, params, book_name, folder='books/'):
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    os.makedirs(folder, exist_ok=True)
 
     try:
         response = requests.get(url=url, params=params, allow_redirects=False)
