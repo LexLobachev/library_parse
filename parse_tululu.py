@@ -88,13 +88,13 @@ def main():
             'id': book_id
         }
         try:
-            book_info = parse_book_page(book_id)
-            book_name = book_info['books_title']
-            book_img = book_info['books_image']
+            book = parse_book_page(book_id)
+            book_name = book['books_title']
+            book_img = book['books_image']
             download_txt(url, params, book_name)
             download_image(book_img)
-        except requests.exceptions.HTTPError as ex:
-            logging.error(ex)
+        except requests.exceptions.HTTPError:
+            logging.error('Something went wrong')
 
 
 if __name__ == '__main__':
