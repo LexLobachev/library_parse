@@ -46,7 +46,7 @@ def parse_book_page(book_html):
 
     book = {
         'book_title': book_title_text,
-        'book_image': book_img_link,
+        'book_image_url': book_img_link,
         'book_comments': book_comments,
         'book_genres': book_genres
     }
@@ -111,9 +111,9 @@ def main():
             book_html = get_book(book_id)
             book = parse_book_page(book_html)
             book_name = book['book_title']
-            book_img = book['book_image']
+            book_img_url = book['book_image_url']
             download_txt(url, params, book_name)
-            download_image(book_img)
+            download_image(book_img_url)
         except requests.exceptions.HTTPError:
             logging.error(f'Something went wrong with book {book_id}')
 
