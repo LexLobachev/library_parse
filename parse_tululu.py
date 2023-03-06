@@ -31,24 +31,24 @@ def get_book(book_id):
 def parse_book_page(book_html):
     soup = BeautifulSoup(book_html, 'lxml')
 
-    books_title_tag = soup.find('td', class_='ow_px_td').find('div', id='content').find('h1')
-    books_title = books_title_tag.text.split('::')
-    books_title_text = books_title[0].strip()
+    book_title_tag = soup.find('td', class_='ow_px_td').find('div', id='content').find('h1')
+    book_title = book_title_tag.text.split('::')
+    book_title_text = book_title[0].strip()
 
-    books_img = soup.find('div', class_='bookimage').find('img')['src']
-    books_img_link = urljoin('https://tululu.org', books_img)
+    book_img = soup.find('div', class_='bookimage').find('img')['src']
+    book_img_link = urljoin('https://tululu.org', book_img)
 
-    books_comments_tag = soup.find('div', id='content').find_all('span', class_='black')
-    books_comments = [comment.text for comment in books_comments_tag]
+    book_comments_tag = soup.find('div', id='content').find_all('span', class_='black')
+    book_comments = [comment.text for comment in book_comments_tag]
 
-    books_genres_tag = soup.find('div', id='content').find('span', class_='d_book').find_all('a')
-    books_genres = [genre.text for genre in books_genres_tag]
+    book_genres_tag = soup.find('div', id='content').find('span', class_='d_book').find_all('a')
+    book_genres = [genre.text for genre in book_genres_tag]
 
     book = {
-        'books_title': books_title_text,
-        'books_image': books_img_link,
-        'books_comments': books_comments,
-        'books_genres': books_genres
+        'book_title': book_title_text,
+        'book_image': book_img_link,
+        'book_comments': book_comments,
+        'book_genres': book_genres
     }
 
     return book
@@ -110,8 +110,8 @@ def main():
         try:
             book_html = get_book(book_id)
             book = parse_book_page(book_html)
-            book_name = book['books_title']
-            book_img = book['books_image']
+            book_name = book['book_title']
+            book_img = book['book_image']
             download_txt(url, params, book_name)
             download_image(book_img)
         except requests.exceptions.HTTPError:
