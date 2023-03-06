@@ -18,11 +18,11 @@ parser.add_argument('end_id', nargs='?', default=10, help='По какой но�
 def get_book(book_id):
     url = f'https://tululu.org/b{book_id}/'
     try:
-        response = requests.get(url, allow_redirects=False)
+        response = requests.get(url, allow_redirects=True)
     except requests.exceptions.ConnectionError:
         print("No internet, will try to reconnect in 10 seconds")
         time.sleep(10)
-        response = requests.get(url, allow_redirects=False)
+        response = requests.get(url, allow_redirects=True)
     check_for_redirect(response)
     response.raise_for_status()
     return response.text
@@ -55,7 +55,7 @@ def parse_book_page(book_html):
 
 
 def check_for_redirect(response):
-    if response.status_code != 200:
+    if response.history:
         raise requests.HTTPError
 
 
@@ -80,11 +80,11 @@ def download_txt(url, params, book_name, folder='books/'):
     os.makedirs(folder, exist_ok=True)
 
     try:
-        response = requests.get(url=url, params=params, allow_redirects=False)
+        response = requests.get(url=url, params=params, allow_redirects=True)
     except requests.exceptions.ConnectionError:
         print("No internet, will try to reconnect in 10 seconds")
         time.sleep(10)
-        response = requests.get(url=url, params=params, allow_redirects=False)
+        response = requests.get(url=url, params=params, allow_redirects=True)
     check_for_redirect(response)
     response.raise_for_status()
 
