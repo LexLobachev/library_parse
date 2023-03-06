@@ -3,6 +3,7 @@ import argparse
 from urllib.parse import urljoin, urlsplit
 from urllib import parse
 import logging
+import time
 
 import requests
 from bs4 import BeautifulSoup
@@ -16,7 +17,12 @@ parser.add_argument('end_id', nargs='?', default=10, help='По какой но�
 
 def get_book(book_id):
     url = f'https://tululu.org/b{book_id}/'
-    response = requests.get(url, allow_redirects=False)
+    try:
+        response = requests.get(url, allow_redirects=False)
+    except requests.exceptions.ConnectionError:
+        print("No internet, will try to reconnect in 10 seconds")
+        time.sleep(10)
+        response = requests.get(url, allow_redirects=False)
     check_for_redirect(response)
     response.raise_for_status()
     return response.text
@@ -57,7 +63,12 @@ def download_image(url, folder='images/'):
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    response = requests.get(url=url)
+    try:
+        response = requests.get(url=url)
+    except requests.exceptions.ConnectionError:
+        print("No internet, will try to reconnect in 10 seconds")
+        time.sleep(10)
+        response = requests.get(url=url)
     response.raise_for_status()
 
     filename = urlsplit(parse.unquote(url)).path.split("/")[-1]
@@ -70,7 +81,12 @@ def download_txt(url, params, book_name, folder='books/'):
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    response = requests.get(url=url, params=params, allow_redirects=False)
+    try:
+        response = requests.get(url=url, params=params, allow_redirects=False)
+    except requests.exceptions.ConnectionError:
+        print("No internet, will try to reconnect in 10 seconds")
+        time.sleep(10)
+        response = requests.get(url=url, params=params, allow_redirects=False)
     check_for_redirect(response)
     response.raise_for_status()
 
