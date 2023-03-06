@@ -14,12 +14,16 @@ parser.add_argument('start_id', nargs='?', default=1, help='С какого но
 parser.add_argument('end_id', nargs='?', default=10, help='По какой номер книги', type=int)
 
 
-def parse_book_page(book_id):
+def get_book(book_id):
     url = f'https://tululu.org/b{book_id}/'
     response = requests.get(url, allow_redirects=False)
     check_for_redirect(response)
     response.raise_for_status()
-    soup = BeautifulSoup(response.text, 'lxml')
+    return response.text
+
+
+def parse_book_page(book_html):
+    soup = BeautifulSoup(book_html, 'lxml')
 
     books_title_tag = soup.find('td', class_='ow_px_td').find('div', id='content').find('h1')
     books_title = books_title_tag.text.split('::')
@@ -88,13 +92,14 @@ def main():
             'id': book_id
         }
         try:
-            book = parse_book_page(book_id)
+            book_html = get_book(book_id)
+            book = parse_book_page(book_html)
             book_name = book['books_title']
             book_img = book['books_image']
             download_txt(url, params, book_name)
             download_image(book_img)
         except requests.exceptions.HTTPError:
-            logging.error('Something went wrong')
+            logging.error(f'Something went wrong with book {book_id}')
 
 
 if __name__ == '__main__':
