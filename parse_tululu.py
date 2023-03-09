@@ -28,11 +28,11 @@ def parse_book_page(book_html, url):
     book_img = soup.find('div', class_='bookimage').find('img')['src']
     book_img_link = urljoin(url, book_img)
 
-    book_comments_tag = soup.find('div', id='content').find_all('span', class_='black')
-    book_comments = [comment.text for comment in book_comments_tag]
+    book_comment_tags = soup.find('div', id='content').find_all('span', class_='black')
+    book_comments = [comment.text for comment in book_comment_tags]
 
-    book_genres_tag = soup.find('div', id='content').find('span', class_='d_book').find_all('a')
-    book_genres = [genre.text for genre in book_genres_tag]
+    book_genre_tags = soup.find('div', id='content').find('span', class_='d_book').find_all('a')
+    book_genres = [genre.text for genre in book_genre_tags]
 
     book = {
         'book_title': book_title_text,
