@@ -15,10 +15,10 @@ def get_book(book_id):
     response = requests.get(url, allow_redirects=True)
     check_for_redirect(response)
     response.raise_for_status()
-    return response.text
+    return response.text, url
 
 
-def parse_book_page(book_html):
+def parse_book_page(book_html, url):
     soup = BeautifulSoup(book_html, 'lxml')
 
     book_title_tag = soup.find('td', class_='ow_px_td').find('div', id='content').find('h1')
@@ -26,7 +26,7 @@ def parse_book_page(book_html):
     book_title_text = book_title[0].strip()
 
     book_img = soup.find('div', class_='bookimage').find('img')['src']
-    book_img_link = urljoin('https://tululu.org', book_img)
+    book_img_link = urljoin(url, book_img)
 
     book_comments_tag = soup.find('div', id='content').find_all('span', class_='black')
     book_comments = [comment.text for comment in book_comments_tag]
@@ -89,13 +89,13 @@ def main():
             'id': book_id
         }
         try:
-            book_html = get_book(book_id)
-            book = parse_book_page(book_html)
+            book_html, url = get_book(book_id)
+            book = parse_book_page(book_html, url)
         except requests.exceptions.ConnectionError:
             print("No internet, will try to reconnect in 10 seconds")
             time.sleep(10)
-            book_html = get_book(book_id)
-            book = parse_book_page(book_html)
+            book_html, url = get_book(book_id)
+            book = parse_book_page(book_html, url)
         except requests.exceptions.HTTPError:
             logging.error(f'Something went wrong with book {book_id}')
         book_name = book['book_title']
