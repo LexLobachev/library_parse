@@ -10,11 +10,6 @@ from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filepath, sanitize_filename
 
 
-parser = argparse.ArgumentParser(description='С какого номера по какой парсить книги?')
-parser.add_argument('start_id', nargs='?', default=1, help='С какого номера книги', type=int)
-parser.add_argument('end_id', nargs='?', default=10, help='По какой номер книги', type=int)
-
-
 def get_book(book_id):
     url = f'https://tululu.org/b{book_id}/'
     try:
@@ -97,6 +92,9 @@ def download_txt(url, params, book_name, folder='books/'):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='С какого номера по какой парсить книги?')
+    parser.add_argument('start_id', nargs='?', default=1, help='С какого номера книги', type=int)
+    parser.add_argument('end_id', nargs='?', default=10, help='По какой номер книги', type=int)
     args = parser.parse_args()
     start_id = args.start_id
     end_id = args.end_id + 1
