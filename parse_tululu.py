@@ -89,29 +89,29 @@ def main():
             'id': book_id
         }
         try:
-            book_html, url = get_book(book_id)
-            book = parse_book_page(book_html, url)
-        except requests.exceptions.ConnectionError:
-            print("No internet, will try to reconnect in 10 seconds")
-            time.sleep(10)
-            book_html, url = get_book(book_id)
-            book = parse_book_page(book_html, url)
+            try:
+                book_html, book_url = get_book(book_id)
+            except requests.exceptions.ConnectionError:
+                print("No internet, will try to reconnect in 10 seconds")
+                time.sleep(10)
+                book_html, book_url = get_book(book_id)
+            book = parse_book_page(book_html, book_url)
+            book_name = book['book_title']
+            book_img_url = book['book_image_url']
+            try:
+                download_txt(url, params, book_name)
+            except requests.exceptions.ConnectionError:
+                print("No internet, will try to reconnect in 10 seconds")
+                time.sleep(10)
+                download_txt(url, params, book_name)
+            try:
+                download_image(book_img_url)
+            except requests.exceptions.ConnectionError:
+                print("No internet, will try to reconnect in 10 seconds")
+                time.sleep(10)
+                download_image(book_img_url)
         except requests.exceptions.HTTPError:
             logging.error(f'Something went wrong with book {book_id}')
-        book_name = book['book_title']
-        book_img_url = book['book_image_url']
-        try:
-            download_txt(url, params, book_name)
-        except requests.exceptions.ConnectionError:
-            print("No internet, will try to reconnect in 10 seconds")
-            time.sleep(10)
-            download_txt(url, params, book_name)
-        try:
-            download_image(book_img_url)
-        except requests.exceptions.ConnectionError:
-            print("No internet, will try to reconnect in 10 seconds")
-            time.sleep(10)
-            download_image(book_img_url)
 
 
 if __name__ == '__main__':
