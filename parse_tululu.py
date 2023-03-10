@@ -8,14 +8,14 @@ import time
 import requests
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filepath, sanitize_filename
+from tqdm import tqdm
 
 
-def get_book(book_id):
-    url = f'https://tululu.org/b{book_id}/'
+def get_book(url):
     response = requests.get(url, allow_redirects=True)
     check_for_redirect(response)
     response.raise_for_status()
-    return response.text, url
+    return response.text
 
 
 def parse_book_page(book_html, url):
@@ -84,17 +84,18 @@ def main():
     start_id = args.start_id
     end_id = args.end_id + 1
     url = 'https://tululu.org/txt.php'
-    for book_id in range(start_id, end_id):
+    for book_id in tqdm(range(start_id, end_id)):
         params = {
             'id': book_id
         }
+        book_url = f'https://tululu.org/b{book_id}/'
         try:
             try:
-                book_html, book_url = get_book(book_id)
+                book_html = get_book(book_url)
             except requests.exceptions.ConnectionError:
                 print("No internet, will try to reconnect in 10 seconds")
                 time.sleep(10)
-                book_html, book_url = get_book(book_id)
+                book_html = get_book(book_url)
             book = parse_book_page(book_html, book_url)
             book_name = book['book_title']
             book_img_url = book['book_image_url']
