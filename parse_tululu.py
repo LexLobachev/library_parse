@@ -90,27 +90,30 @@ def main():
         }
         book_url = f'https://tululu.org/b{book_id}/'
         try:
-            try:
-                book_html = get_book(book_url)
-            except requests.exceptions.ConnectionError:
-                print("No internet, will try to reconnect in 10 seconds")
-                time.sleep(10)
-                book_html = get_book(book_url)
+            while True:
+                try:
+                    book_html = get_book(book_url)
+                    break
+                except requests.exceptions.ConnectionError:
+                    print("No internet, will try to reconnect in 10 seconds")
+                    time.sleep(10)
             book = parse_book_page(book_html, book_url)
             book_name = book['book_title']
             book_img_url = book['book_image_url']
-            try:
-                download_txt(url, params, book_name)
-            except requests.exceptions.ConnectionError:
-                print("No internet, will try to reconnect in 10 seconds")
-                time.sleep(10)
-                download_txt(url, params, book_name)
-            try:
-                download_image(book_img_url)
-            except requests.exceptions.ConnectionError:
-                print("No internet, will try to reconnect in 10 seconds")
-                time.sleep(10)
-                download_image(book_img_url)
+            while True:
+                try:
+                    download_txt(url, params, book_name)
+                    break
+                except requests.exceptions.ConnectionError:
+                    print("No internet, will try to reconnect in 10 seconds")
+                    time.sleep(10)
+            while True:
+                try:
+                    download_image(book_img_url)
+                    break
+                except requests.exceptions.ConnectionError:
+                    print("No internet, will try to reconnect in 10 seconds")
+                    time.sleep(10)
         except requests.exceptions.HTTPError:
             logging.error(f'Something went wrong with book {book_id}')
 
