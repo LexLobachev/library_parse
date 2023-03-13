@@ -28,15 +28,16 @@ def parse_category_page(book_html, url):
 
 
 def main():
-    url = 'https://tululu.org/l55/'
-    while True:
-        try:
-            book_html = get_book(url)
-            break
-        except requests.exceptions.ConnectionError:
-            print("No internet, will try to reconnect in 10 seconds")
-            time.sleep(10)
-    parse_category_page(book_html, url)
+    for category_page in tqdm(range(1, 11)):
+        url = f'https://tululu.org/l55/{category_page}'
+        while True:
+            try:
+                book_html = get_book(url)
+                break
+            except requests.exceptions.ConnectionError:
+                print("No internet, will try to reconnect in 10 seconds")
+                time.sleep(10)
+        parse_category_page(book_html, url)
 
 
 if __name__ == '__main__':
