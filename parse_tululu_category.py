@@ -20,9 +20,11 @@ def get_book(url):
 def parse_category_page(book_html, url):
     soup = BeautifulSoup(book_html, 'lxml')
 
-    book_id = soup.find('td', class_='ow_px_td').find('div', id='content').find('div', class_='bookimage').find('a')['href']
-    book_url = urljoin(url, book_id)
-    print(book_url)
+    book_tags = soup.find('td', class_='ow_px_td').find('div', id='content').find_all('div', class_='bookimage')
+    for book in book_tags:
+        book_id = book.find('a')['href']
+        book_url = urljoin(url, book_id)
+        print(book_url)
 
 
 def main():
