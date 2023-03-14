@@ -72,6 +72,7 @@ def download_txt(url, book_id, book_name, folder='books/'):
 
 
 def create_json(title, author, img_src, book_path, comments, genres, path):
+    os.makedirs(path, exist_ok=True)
     json_path = os.path.join(path, "books.json")
     all_books = []
     books = {
