@@ -29,7 +29,9 @@ def parse_category_page(book_html, url):
     book_ids = []
     soup = BeautifulSoup(book_html, 'lxml')
 
-    book_tags = soup.find('td', class_='ow_px_td').find('div', id='content').find_all('div', class_='bookimage')
+    # book_tags = soup.find('td', class_='ow_px_td').find('div', id='content').find_all('div', class_='bookimage')
+    selector = "td.ow_px_td div.bookimage"
+    book_tags = soup.select(selector)
     for book in book_tags:
         book_id = book.find('a')['href']
         book_url = urljoin(url, book_id)
@@ -82,10 +84,6 @@ def create_json(title, author, img_src, book_path, comments, genres):
         "genres": genres
     }
 
-    # books_json = json.dumps(books, ensure_ascii=False)
-
-    # with open("books.json", "w", encoding='utf-8') as my_file:
-    #     my_file.write(books_json)
     if os.path.exists("books.json"):
         with open("books.json") as my_file:
             all_books = json.load(my_file)
@@ -99,7 +97,8 @@ def create_json(title, author, img_src, book_path, comments, genres):
 def parse_book_page(book_html, url):
     soup = BeautifulSoup(book_html, 'lxml')
 
-    book_title_tag = soup.find('td', class_='ow_px_td').find('div', id='content').find('h1')
+    selector = "td.ow_px_td h1"
+    book_title_tag = soup.select_one(selector)
     book_title = book_title_tag.text.split('::')
     book_title_text = book_title[0].strip()
 
@@ -109,10 +108,12 @@ def parse_book_page(book_html, url):
     book_img = soup.find('div', class_='bookimage').find('img')['src']
     book_img_link = urljoin(url, book_img)
 
-    book_comment_tags = soup.find('div', id='content').find_all('span', class_='black')
+    selector = "span.black"
+    book_comment_tags = soup.select(selector)
     book_comments = [comment.text for comment in book_comment_tags]
 
-    book_genre_tags = soup.find('div', id='content').find('span', class_='d_book').find_all('a')
+    selector = "span.d_book a"
+    book_genre_tags = soup.select(selector)
     book_genres = [genre.text for genre in book_genre_tags]
 
     book = {
