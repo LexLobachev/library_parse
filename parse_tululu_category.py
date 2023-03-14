@@ -28,7 +28,6 @@ def parse_category_page(book_html, url):
     book_ids = []
     soup = BeautifulSoup(book_html, 'lxml')
 
-    # book_tags = soup.find('td', class_='ow_px_td').find('div', id='content').find_all('div', class_='bookimage')
     selector = "td.ow_px_td div.bookimage"
     book_tags = soup.select(selector)
     for book in book_tags:
@@ -72,7 +71,8 @@ def download_txt(url, book_id, book_name, folder='books/'):
     return filepath
 
 
-def create_json(title, author, img_src, book_path, comments, genres):
+def create_json(title, author, img_src, book_path, comments, genres, path):
+    json_path = os.path.join(path, "books.json")
     all_books = []
     books = {
         "title": title,
@@ -83,13 +83,13 @@ def create_json(title, author, img_src, book_path, comments, genres):
         "genres": genres
     }
 
-    if os.path.exists("books.json"):
-        with open("books.json") as my_file:
+    if os.path.exists(json_path):
+        with open(json_path) as my_file:
             all_books = json.load(my_file)
 
     all_books.append(books)
 
-    with open("books.json", "w+", encoding='utf-8') as my_file:
+    with open(json_path, "w+", encoding='utf-8') as my_file:
         json.dump(all_books, my_file, ensure_ascii=False, indent=4, separators=(',', ': '))
 
 
@@ -128,11 +128,20 @@ def parse_book_page(book_html, url):
 
 def main():
     parser = argparse.ArgumentParser(description='С какого номера страницы по какой парсить книги?')
-    parser.add_argument('--start_page', default=1, help='С какого номера страницы', type=int)
-    parser.add_argument('--end_page', default=702, help='По какой номер страницы', type=int)
+    parser.add_argument('--start_page', default=1, help='С какого номера страницы?', type=int)
+    parser.add_argument('--end_page', default=702, help='По какой номер страницы?', type=int)
+    parser.add_argument('--dest_folder', default='parsed_books/', help='Где хранятся скачанные данные книг?', type=str)
+    parser.add_argument('--skip_imgs', default=False, help='Не скачивать картинки?', type=bool)
+    parser.add_argument('--skip_txt', default=False, help='Не скачивать книги?', type=bool)
+    parser.add_argument('--json_path', default='parsed_books/', help='Куда сохранить *.json файл с результатами?',
+                        type=str)
     args = parser.parse_args()
     start_page = args.start_page
     end_page = args.end_page
+    dest_folder = args.dest_folder
+    skip_imgs = args.skip_imgs
+    skip_txt = args.skip_txt
+    json_path = args.json_path
     book_ids = []
     for category_page in tqdm(range(start_page, end_page)):
         url = f'https://tululu.org/l55/{category_page}'
@@ -161,23 +170,32 @@ def main():
             book_author = book['book_author']
             book_comments = book['book_comments']
             book_genres = book['book_genres']
+            if not skip_txt:
+                while True:
+                    try:
+                        folder = os.path.join(dest_folder, 'books/')
+                        book_filepath = download_txt(url, book_id, book_name, folder)
+                        break
+                    except requests.exceptions.ConnectionError:
+                        print("No internet, will try to reconnect in 10 seconds")
+                        time.sleep(10)
+            else:
+                book_filepath = ''
+            if not skip_imgs:
+                while True:
+                    try:
+                        folder = os.path.join(dest_folder, 'images/')
+                        img_filepath = download_image(book_img_url, folder)
+                        break
+                    except requests.exceptions.ConnectionError:
+                        print("No internet, will try to reconnect in 10 seconds")
+                        time.sleep(10)
+            else:
+                img_filepath = ''
             while True:
                 try:
-                    book_filepath = download_txt(url, book_id, book_name)
-                    break
-                except requests.exceptions.ConnectionError:
-                    print("No internet, will try to reconnect in 10 seconds")
-                    time.sleep(10)
-            while True:
-                try:
-                    img_filepath = download_image(book_img_url)
-                    break
-                except requests.exceptions.ConnectionError:
-                    print("No internet, will try to reconnect in 10 seconds")
-                    time.sleep(10)
-            while True:
-                try:
-                    create_json(book_name, book_author, img_filepath, book_filepath, book_comments, book_genres)
+                    path = json_path
+                    create_json(book_name, book_author, img_filepath, book_filepath, book_comments, book_genres, path)
                     break
                 except requests.exceptions.ConnectionError:
                     print("No internet, will try to reconnect in 10 seconds")
