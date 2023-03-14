@@ -25,7 +25,6 @@ def get_book(url):
 
 
 def parse_category_page(book_html, url):
-    book_urls = []
     book_ids = []
     soup = BeautifulSoup(book_html, 'lxml')
 
@@ -35,7 +34,7 @@ def parse_category_page(book_html, url):
     for book in book_tags:
         book_id = book.find('a')['href']
         book_url = urljoin(url, book_id)
-        book_urls.append(book_url)
+        print(book_url)
         book_id_number = ""
         for c in book_id:
             if c.isdigit():
@@ -128,8 +127,14 @@ def parse_book_page(book_html, url):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='С какого номера страницы по какой парсить книги?')
+    parser.add_argument('--start_page', default=1, help='С какого номера страницы', type=int)
+    parser.add_argument('--end_page', default=702, help='По какой номер страницы', type=int)
+    args = parser.parse_args()
+    start_page = args.start_page
+    end_page = args.end_page
     book_ids = []
-    for category_page in tqdm(range(1, 5)):
+    for category_page in tqdm(range(start_page, end_page)):
         url = f'https://tululu.org/l55/{category_page}'
         while True:
             try:
@@ -139,8 +144,6 @@ def main():
                 print("No internet, will try to reconnect in 10 seconds")
                 time.sleep(10)
         book_ids += parse_category_page(book_html, url)
-    print(len(book_ids))
-    print(book_ids)
     url = 'https://tululu.org/txt.php'
     for book_id in tqdm(book_ids):
         book_url = f'https://tululu.org/b{book_id}/'
