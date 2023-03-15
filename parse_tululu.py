@@ -11,7 +11,7 @@ from pathvalidate import sanitize_filepath, sanitize_filename
 from tqdm import tqdm
 
 
-def get_book(url):
+def get_page_html(url):
     response = requests.get(url, allow_redirects=True)
     check_for_redirect(response)
     response.raise_for_status()
@@ -98,7 +98,7 @@ def main():
         try:
             while True:
                 try:
-                    book_html = get_book(book_url)
+                    book_html = get_page_html(book_url)
                     break
                 except requests.exceptions.ConnectionError:
                     print("No internet, will try to reconnect in 10 seconds")

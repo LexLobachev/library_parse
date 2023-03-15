@@ -9,7 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-from parse_tululu import get_book, download_image, download_txt, parse_book_page
+from parse_tululu import get_page_html, download_image, download_txt, parse_book_page
 
 
 def parse_category_page(book_html, url):
@@ -75,19 +75,19 @@ def main():
         url = f'https://tululu.org/l55/{category_page}'
         while True:
             try:
-                book_html = get_book(url)
+                category_html = get_page_html(url)
                 break
             except requests.exceptions.ConnectionError:
                 print("No internet, will try to reconnect in 10 seconds")
                 time.sleep(10)
-        book_ids += parse_category_page(book_html, url)
+        book_ids += parse_category_page(category_html, url)
     url = 'https://tululu.org/txt.php'
     for book_id in tqdm(book_ids):
         book_url = f'https://tululu.org/b{book_id}/'
         try:
             while True:
                 try:
-                    book_html = get_book(book_url)
+                    book_html = get_page_html(book_url)
                     break
                 except requests.exceptions.ConnectionError:
                     print("No internet, will try to reconnect in 10 seconds")
