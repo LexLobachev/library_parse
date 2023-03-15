@@ -120,14 +120,8 @@ def main():
                         time.sleep(10)
             else:
                 img_filepath = ''
-            while True:
-                try:
-                    path = json_path
-                    create_json(book_name, book_author, img_filepath, book_filepath, book_comments, book_genres, path)
-                    break
-                except requests.exceptions.ConnectionError:
-                    print("No internet, will try to reconnect in 10 seconds")
-                    time.sleep(10)
+            path = json_path
+            create_json(book_name, book_author, img_filepath, book_filepath, book_comments, book_genres, path)
         except requests.exceptions.HTTPError:
             logging.error(f'Something went wrong with book {book_id}')
 
