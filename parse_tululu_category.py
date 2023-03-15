@@ -1,27 +1,15 @@
 import os
 import argparse
-from urllib.parse import urljoin, urlsplit
-from urllib import parse
+from urllib.parse import urljoin
 import logging
 import time
 import json
 
 import requests
 from bs4 import BeautifulSoup
-from pathvalidate import sanitize_filepath, sanitize_filename
 from tqdm import tqdm
 
-
-def check_for_redirect(response):
-    if response.history:
-        raise requests.HTTPError
-
-
-def get_book(url):
-    response = requests.get(url, allow_redirects=True)
-    check_for_redirect(response)
-    response.raise_for_status()
-    return response.text
+from parse_tululu import get_book, download_image, download_txt, parse_book_page
 
 
 def parse_category_page(book_html, url):
@@ -39,36 +27,8 @@ def parse_category_page(book_html, url):
             if c.isdigit():
                 book_id_number = book_id_number + c
         book_ids.append(book_id_number)
+
     return book_ids
-
-
-def download_image(url, folder='images/'):
-    os.makedirs(folder, exist_ok=True)
-
-    response = requests.get(url=url)
-    response.raise_for_status()
-
-    filename = urlsplit(parse.unquote(url)).path.split("/")[-1]
-    filepath = os.path.join(folder, filename)
-    with open(filepath, 'wb') as file:
-        file.write(response.content)
-
-    return filepath
-
-
-def download_txt(url, book_id, book_name, folder='books/'):
-    os.makedirs(folder, exist_ok=True)
-
-    response = requests.get(url=url, params={'id': book_id}, allow_redirects=True)
-    check_for_redirect(response)
-    response.raise_for_status()
-
-    filename = f"{book_id}-я книга. {book_name}.txt"
-    filepath = sanitize_filepath(os.path.join(folder, sanitize_filename(filename)))
-    with open(filepath, 'wb') as file:
-        file.write(response.content)
-
-    return filepath
 
 
 def create_json(title, author, img_src, book_path, comments, genres, path):
@@ -92,39 +52,6 @@ def create_json(title, author, img_src, book_path, comments, genres, path):
 
     with open(json_path, "w+", encoding='utf-8') as my_file:
         json.dump(all_books, my_file, ensure_ascii=False, indent=4, separators=(',', ': '))
-
-
-def parse_book_page(book_html, url):
-    soup = BeautifulSoup(book_html, 'lxml')
-
-    selector = "td.ow_px_td h1"
-    book_title_tag = soup.select_one(selector)
-    book_title = book_title_tag.text.split('::')
-    book_title_text = book_title[0].strip()
-
-    book_author_tag = book_title_tag.find('a')
-    book_author = book_author_tag.text
-
-    book_img = soup.find('div', class_='bookimage').find('img')['src']
-    book_img_link = urljoin(url, book_img)
-
-    selector = "span.black"
-    book_comment_tags = soup.select(selector)
-    book_comments = [comment.text for comment in book_comment_tags]
-
-    selector = "span.d_book a"
-    book_genre_tags = soup.select(selector)
-    book_genres = [genre.text for genre in book_genre_tags]
-
-    book = {
-        'book_title': book_title_text,
-        'book_author': book_author,
-        'book_image_url': book_img_link,
-        'book_comments': book_comments,
-        'book_genres': book_genres
-    }
-
-    return book
 
 
 def main():

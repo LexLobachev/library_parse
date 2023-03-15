@@ -21,21 +21,28 @@ def get_book(url):
 def parse_book_page(book_html, url):
     soup = BeautifulSoup(book_html, 'lxml')
 
-    book_title_tag = soup.find('td', class_='ow_px_td').find('div', id='content').find('h1')
+    selector = "td.ow_px_td h1"
+    book_title_tag = soup.select_one(selector)
     book_title = book_title_tag.text.split('::')
     book_title_text = book_title[0].strip()
+
+    book_author_tag = book_title_tag.find('a')
+    book_author = book_author_tag.text
 
     book_img = soup.find('div', class_='bookimage').find('img')['src']
     book_img_link = urljoin(url, book_img)
 
-    book_comment_tags = soup.find('div', id='content').find_all('span', class_='black')
+    selector = "span.black"
+    book_comment_tags = soup.select(selector)
     book_comments = [comment.text for comment in book_comment_tags]
 
-    book_genre_tags = soup.find('div', id='content').find('span', class_='d_book').find_all('a')
+    selector = "span.d_book a"
+    book_genre_tags = soup.select(selector)
     book_genres = [genre.text for genre in book_genre_tags]
 
     book = {
         'book_title': book_title_text,
+        'book_author': book_author,
         'book_image_url': book_img_link,
         'book_comments': book_comments,
         'book_genres': book_genres
@@ -60,15 +67,17 @@ def download_image(url, folder='images/'):
     with open(filepath, 'wb') as file:
         file.write(response.content)
 
+    return filepath
 
-def download_txt(url, params, book_name, folder='books/'):
+
+def download_txt(url, book_id, book_name, folder='books/'):
     os.makedirs(folder, exist_ok=True)
 
-    response = requests.get(url=url, params=params, allow_redirects=True)
+    response = requests.get(url=url, params={'id': book_id}, allow_redirects=True)
     check_for_redirect(response)
     response.raise_for_status()
 
-    filename = f"{params['id']}. {book_name}.txt"
+    filename = f"{book_id}-я книга. {book_name}.txt"
     filepath = sanitize_filepath(os.path.join(folder, sanitize_filename(filename)))
     with open(filepath, 'wb') as file:
         file.write(response.content)
@@ -85,9 +94,6 @@ def main():
     end_id = args.end_id + 1
     url = 'https://tululu.org/txt.php'
     for book_id in tqdm(range(start_id, end_id)):
-        params = {
-            'id': book_id
-        }
         book_url = f'https://tululu.org/b{book_id}/'
         try:
             while True:
@@ -102,7 +108,7 @@ def main():
             book_img_url = book['book_image_url']
             while True:
                 try:
-                    download_txt(url, params, book_name)
+                    download_txt(url, book_id, book_name)
                     break
                 except requests.exceptions.ConnectionError:
                     print("No internet, will try to reconnect in 10 seconds")
