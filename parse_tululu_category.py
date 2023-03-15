@@ -45,13 +45,13 @@ def create_json(title, author, img_src, book_path, comments, genres, path):
     }
 
     if os.path.exists(json_path):
-        with open(json_path) as my_file:
-            all_books = json.load(my_file)
+        with open(json_path) as file:
+            all_books = json.load(file)
 
     all_books.append(books)
 
-    with open(json_path, "w+", encoding='utf-8') as my_file:
-        json.dump(all_books, my_file, ensure_ascii=False, indent=4, separators=(',', ': '))
+    with open(json_path, "w+", encoding='utf-8') as file:
+        json.dump(all_books, file, ensure_ascii=False, indent=4, separators=(',', ': '))
 
 
 def main():
