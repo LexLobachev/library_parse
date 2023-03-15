@@ -46,10 +46,10 @@ If you want to parse another range of pages, just type from what page to what yo
 $ python3 parse_tululu_category.py --start_page 700 --end_page 701
 ```
 
-If you don't want to parse images or books, just type `--skip_imgs True` and `skip_txt True` respectively:
+If you don't want to parse images or books, just type `--skip_imgs` and `skip_txt` respectively:
 
 ```bash
-$ python3 parse_tululu_category.py --skip_imgs True --skip_txt True
+$ python3 parse_tululu_category.py --skip_imgs --skip_txt
 ```
 
 If you want to change the destination folder for all parsed information, just type `--dest_folder YOUR_DEST`(e.g. `--dest_folder some_folder`):

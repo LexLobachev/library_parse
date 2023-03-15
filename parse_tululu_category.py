@@ -59,8 +59,8 @@ def main():
     parser.add_argument('--start_page', default=1, help='С какого номера страницы?', type=int)
     parser.add_argument('--end_page', default=702, help='По какой номер страницы?', type=int)
     parser.add_argument('--dest_folder', default='parsed_books/', help='Где хранятся скачанные данные книг?', type=str)
-    parser.add_argument('--skip_imgs', default=False, help='Не скачивать картинки?', type=bool)
-    parser.add_argument('--skip_txt', default=False, help='Не скачивать книги?', type=bool)
+    parser.add_argument('--skip_imgs', help='Не скачивать картинки?', action='store_true')
+    parser.add_argument('--skip_txt', help='Не скачивать книги?', action='store_true')
     parser.add_argument('--json_path', default='parsed_books/', help='Куда сохранить *.json файл с результатами?',
                         type=str)
     args = parser.parse_args()
