@@ -31,24 +31,9 @@ def parse_category_page(book_html, url):
     return book_ids
 
 
-def create_json(title, author, img_src, book_path, comments, genres, path):
+def create_json(all_books, path):
     os.makedirs(path, exist_ok=True)
     json_path = os.path.join(path, "books.json")
-    all_books = []
-    books = {
-        "title": title,
-        "author": author,
-        "img_src": img_src,
-        "book_path": book_path,
-        "comments": comments,
-        "genres": genres
-    }
-
-    if os.path.exists(json_path):
-        with open(json_path) as file:
-            all_books = json.load(file)
-
-    all_books.append(books)
 
     with open(json_path, "w+", encoding='utf-8') as file:
         json.dump(all_books, file, ensure_ascii=False, indent=4, separators=(',', ': '))
@@ -82,6 +67,7 @@ def main():
                 time.sleep(10)
         book_ids += parse_category_page(category_html, url)
     url = 'https://tululu.org/txt.php'
+    parsed_books = []
     for book_id in tqdm(book_ids):
         book_url = f'https://tululu.org/b{book_id}/'
         try:
@@ -120,10 +106,20 @@ def main():
                         time.sleep(10)
             else:
                 img_filepath = ''
-            path = json_path
-            create_json(book_name, book_author, img_filepath, book_filepath, book_comments, book_genres, path)
+
+            book = {
+                "title": book_name,
+                "author": book_author,
+                "img_src": img_filepath,
+                "book_path": book_filepath,
+                "comments": book_comments,
+                "genres": book_genres
+            }
+            parsed_books.append(book)
         except requests.exceptions.HTTPError:
             logging.error(f'Something went wrong with book {book_id}')
+    path = json_path
+    create_json(parsed_books, path)
 
 
 if __name__ == '__main__':

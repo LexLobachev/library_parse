@@ -29,10 +29,11 @@ def parse_book_page(book_html, url):
     book_author_tag = book_title_tag.find('a')
     book_author = book_author_tag.text
 
-    book_img = soup.find('div', class_='bookimage').find('img')['src']
+    selector = "div.bookimage img[src]"
+    book_img = soup.select_one(selector)['src']
     book_img_link = urljoin(url, book_img)
 
-    selector = "span.black"
+    selector = "#content span.black"
     book_comment_tags = soup.select(selector)
     book_comments = [comment.text for comment in book_comment_tags]
 
