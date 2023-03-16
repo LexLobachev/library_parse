@@ -20,12 +20,7 @@ def parse_category_page(book_html, url):
     book_tags = soup.select(selector)
     for book in book_tags:
         book_id = book.find('a')['href']
-        book_url = urljoin(url, book_id)
-        print(book_url)
-        book_id_number = ""
-        for c in book_id:
-            if c.isdigit():
-                book_id_number = book_id_number + c
+        book_id_number = book_id.replace('/', '').replace('b', '')
         book_ids.append(book_id_number)
 
     return book_ids
@@ -118,8 +113,7 @@ def main():
             parsed_books.append(book)
         except requests.exceptions.HTTPError:
             logging.error(f'Something went wrong with book {book_id}')
-    path = json_path
-    create_json(parsed_books, path)
+    create_json(parsed_books, json_path)
 
 
 if __name__ == '__main__':
