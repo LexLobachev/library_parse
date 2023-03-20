@@ -1,6 +1,5 @@
 import os
 import argparse
-from urllib.parse import urljoin
 import logging
 import time
 import json

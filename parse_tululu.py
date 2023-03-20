@@ -78,7 +78,8 @@ def download_txt(url, book_id, book_name, folder='books/'):
     check_for_redirect(response)
     response.raise_for_status()
 
-    filename = f"{book_id}-я книга. {book_name}.txt"
+    book_name = book_name.replace(' ', '_')
+    filename = f"{book_id}.{book_name}.txt"
     filepath = sanitize_filepath(os.path.join(folder, sanitize_filename(filename)))
     with open(filepath, 'wb') as file:
         file.write(response.content)
