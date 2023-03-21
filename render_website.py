@@ -17,7 +17,7 @@ def on_reload():
         books = file.read()
 
     books = json.loads(books)
-    chunked_books = list(chunked(books, 10))
+    chunked_books = list(chunked(books, 20))
     os.makedirs('pages', exist_ok=True)
     length_pages = len(chunked_books)
 
