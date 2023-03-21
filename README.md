@@ -63,3 +63,10 @@ If you want to change `*.json` filepath, just type `--json_path `(e.g. `--dest_f
 ```bash
 $ python3 parse_tululu_category.py --json_path some_path
 ```
+
+### render_website.py
+
+```bash
+$ python3 render_website.py
+```
+
