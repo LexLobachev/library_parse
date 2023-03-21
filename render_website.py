@@ -1,3 +1,4 @@
+import os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import json
 from livereload import Server
@@ -12,18 +13,23 @@ def on_reload():
 
     template = env.get_template('template.html')
 
-    with open("parsed_books/books.json", "r") as my_file:
-        books = my_file.read()
+    with open("parsed_books/books.json", "r") as file:
+        books = file.read()
 
     books = json.loads(books)
-    books = list(chunked(books, 2))
+    chunked_books = list(chunked(books, 10))
+    os.makedirs('pages', exist_ok=True)
+    length_pages = len(chunked_books)
 
-    rendered_page = template.render(
-        books=books
-    )
-
-    with open('index.html', 'w', encoding="utf8") as file:
-        file.write(rendered_page)
+    for page, books in enumerate(chunked_books, 1):
+        rendered_page = template.render(
+            books=books,
+            current_page=page,
+            last_page=length_pages,
+            pages=range(1, length_pages+1)
+        )
+        with open(f'pages/index{page}.html', 'w', encoding="utf8") as file:
+            file.write(rendered_page)
 
 
 def main():
