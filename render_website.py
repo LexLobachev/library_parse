@@ -18,7 +18,7 @@ def on_reload():
 
     books = json.loads(books)
     chunked_books = list(chunked(books, 20))
-    os.makedirs('pages', exist_ok=True)
+    os.makedirs('docs', exist_ok=True)
     length_pages = len(chunked_books)
 
     for page, books in enumerate(chunked_books, 1):
@@ -28,7 +28,7 @@ def on_reload():
             last_page=length_pages,
             pages=range(1, length_pages+1)
         )
-        with open(f'pages/index{page}.html', 'w', encoding="utf8") as file:
+        with open(f'docs/index{page}.html', 'w', encoding="utf8") as file:
             file.write(rendered_page)
 
 
