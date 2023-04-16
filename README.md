@@ -78,3 +78,4 @@ If you want to change `*.json` filepath, just type `--json_path `(e.g. `--dest_f
 $ python3 render_website.py --json_path some_path
 ```
 
+To see your library locally follow the [link](http://127.0.0.1:5500/pages/index1.html)
