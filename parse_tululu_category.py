@@ -1,14 +1,15 @@
-import os
 import argparse
-import logging
-import time
 import json
+import logging
+import os
+import time
 
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-from parse_tululu import get_page_html, download_image, download_txt, parse_book_page
+from parse_tululu import (download_image, download_txt, get_page_html,
+                          parse_book_page)
 
 
 def parse_category_page(book_html, url):

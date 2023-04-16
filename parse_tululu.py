@@ -1,13 +1,13 @@
-import os
 import argparse
-from urllib.parse import urljoin, urlsplit
-from urllib import parse
 import logging
+import os
 import time
+from urllib import parse
+from urllib.parse import urljoin, urlsplit
 
 import requests
 from bs4 import BeautifulSoup
-from pathvalidate import sanitize_filepath, sanitize_filename
+from pathvalidate import sanitize_filename, sanitize_filepath
 from tqdm import tqdm
 
 

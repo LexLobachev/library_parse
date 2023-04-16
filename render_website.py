@@ -1,6 +1,7 @@
-import os
-from jinja2 import Environment, FileSystemLoader, select_autoescape
 import json
+import os
+
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from livereload import Server
 from more_itertools import chunked
 
@@ -26,7 +27,7 @@ def on_reload():
             books=books,
             current_page=page,
             last_page=length_pages,
-            pages=range(1, length_pages+1)
+            pages=range(1, length_pages + 1)
         )
         with open(f'pages/index{page}.html', 'w', encoding="utf8") as file:
             file.write(rendered_page)
