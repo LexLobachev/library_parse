@@ -15,14 +15,14 @@ def on_reload(json_path):
 
     template = env.get_template('template.html')
 
-    books = json.loads(json_path)
-    chunked_books = list(chunked(books, 20))
+    book_descriptions = json.load(open(json_path))
+    chunked_book_descriptions = list(chunked(book_descriptions, 20))
     os.makedirs('pages', exist_ok=True)
-    length_pages = len(chunked_books)
+    length_pages = len(chunked_book_descriptions)
 
-    for page, books in enumerate(chunked_books, 1):
+    for page, book_descriptions in enumerate(chunked_book_descriptions, 1):
         rendered_page = template.render(
-            books=books,
+            book_descriptions=book_descriptions,
             current_page=page,
             last_page=length_pages,
             pages=range(1, length_pages + 1)
