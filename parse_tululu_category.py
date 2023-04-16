@@ -26,8 +26,11 @@ def parse_category_page(book_html, url):
 
 
 def create_json(all_books, path):
-    os.makedirs(path, exist_ok=True)
-    json_path = os.path.join(path, "books.json")
+    if path != "/":
+        os.makedirs(path, exist_ok=True)
+        json_path = os.path.join(path, "books.json")
+    else:
+        json_path = "books.json"
 
     with open(json_path, "w+", encoding='utf-8') as file:
         json.dump(all_books, file, ensure_ascii=False, indent=4, separators=(',', ': '))
@@ -37,10 +40,10 @@ def main():
     parser = argparse.ArgumentParser(description='С какого номера страницы по какой парсить книги?')
     parser.add_argument('--start_page', default=1, help='С какого номера страницы?', type=int)
     parser.add_argument('--end_page', default=702, help='По какой номер страницы?', type=int)
-    parser.add_argument('--dest_folder', default='parsed_books/', help='Где хранятся скачанные данные книг?', type=str)
+    parser.add_argument('--dest_folder', default='media/', help='Где хранятся скачанные данные книг?', type=str)
     parser.add_argument('--skip_imgs', help='Не скачивать картинки?', action='store_true')
     parser.add_argument('--skip_txt', help='Не скачивать книги?', action='store_true')
-    parser.add_argument('--json_path', default='parsed_books/', help='Куда сохранить *.json файл с результатами?',
+    parser.add_argument('--json_path', default='/', help='Куда сохранить *.json файл с результатами?',
                         type=str)
     args = parser.parse_args()
     start_page = args.start_page

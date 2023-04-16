@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="static/bootstrap.min.css">
-    <link rel="icon" type="image/png" href="static/library_logo.png">
+    <link rel="stylesheet" href="../static/bootstrap.min.css">
+    <link rel="icon" type="image/png" href="../static/library_logo.png">
 
     <title>Grandpa's Library</title>
   </head>
@@ -57,7 +57,7 @@
             <div class="card mb-3" style="max-width: 34rem;">
               <div class="row no-gutters">
                 <div class="col-md-4">
-                  <img src="{{book.img_src}}" class="card-img" alt="{{book.title}}">
+                  <img src="../{{book.img_src}}" class="card-img" alt="{{book.title}}">
                 </div>
                 <div class="col-md-8">
                   <div class="card-body">
@@ -68,7 +68,7 @@
                         <span class="badge badge-info">{{genre}}</span>
                       {% endfor %}
                     </p>
-                    <p class="card-text"><a href="{{ book.book_path }}" target="_blank">Читать</a></p>
+                    <p class="card-text"><a href="../{{book.book_path}}" target="_blank">Читать</a></p>
                   </div>
                 </div>
               </div>
@@ -78,8 +78,8 @@
       </div>
     </div>
 
-    <script src="static/jquery-slim.min.js"></script>
-    <script src="static/popper.min.js"></script>
-    <script src="static/bootstrap.min.js" ></script>
+    <script src="../static/jquery-slim.min.js"></script>
+    <script src="../static/popper.min.js"></script>
+    <script src="../static/bootstrap.min.js" ></script>
   </body>
 </html>
