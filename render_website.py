@@ -15,10 +15,7 @@ def on_reload(json_path):
 
     template = env.get_template('template.html')
 
-    with open(json_path, "r") as file:
-        books = file.read()
-
-    books = json.loads(books)
+    books = json.loads(json_path)
     chunked_books = list(chunked(books, 20))
     os.makedirs('pages', exist_ok=True)
     length_pages = len(chunked_books)
