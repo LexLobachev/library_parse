@@ -16,7 +16,7 @@ def parse_category_page(book_html, url):
     book_ids = []
     soup = BeautifulSoup(book_html, 'lxml')
 
-    selector = "td.ow_px_td div.bookimage"
+    selector = 'td.ow_px_td div.bookimage'
     book_tags = soup.select(selector)
     for book in book_tags:
         book_id = book.find('a')['href']
@@ -27,13 +27,13 @@ def parse_category_page(book_html, url):
 
 
 def create_json(all_books, path):
-    if path != "/":
+    if path != '/':
         os.makedirs(path, exist_ok=True)
-        json_path = os.path.join(path, "books.json")
+        json_path = os.path.join(path, 'books.json')
     else:
-        json_path = "books.json"
+        json_path = 'books.json'
 
-    with open(json_path, "w+", encoding='utf-8') as file:
+    with open(json_path, 'w+', encoding='utf-8') as file:
         json.dump(all_books, file, ensure_ascii=False, indent=4, separators=(',', ': '))
 
 
@@ -74,7 +74,7 @@ def main():
                     book_html = get_page_html(book_url)
                     break
                 except requests.exceptions.ConnectionError:
-                    print("No internet, will try to reconnect in 10 seconds")
+                    print('No internet, will try to reconnect in 10 seconds')
                     time.sleep(10)
             book = parse_book_page(book_html, book_url)
             book_name = book['book_title']
@@ -89,7 +89,7 @@ def main():
                         book_filepath = download_txt(url, book_id, book_name, folder)
                         break
                     except requests.exceptions.ConnectionError:
-                        print("No internet, will try to reconnect in 10 seconds")
+                        print('No internet, will try to reconnect in 10 seconds')
                         time.sleep(10)
             else:
                 book_filepath = ''
@@ -100,18 +100,18 @@ def main():
                         img_filepath = download_image(book_img_url, folder)
                         break
                     except requests.exceptions.ConnectionError:
-                        print("No internet, will try to reconnect in 10 seconds")
+                        print('No internet, will try to reconnect in 10 seconds"')
                         time.sleep(10)
             else:
                 img_filepath = ''
 
             book = {
-                "title": book_name,
-                "author": book_author,
-                "img_src": img_filepath,
-                "book_path": book_filepath,
-                "comments": book_comments,
-                "genres": book_genres
+                'title': book_name,
+                'author': book_author,
+                'img_src': img_filepath,
+                'book_path': book_filepath,
+                'comments': book_comments,
+                'genres': book_genres
             }
             parsed_books.append(book)
         except requests.exceptions.HTTPError:

@@ -27,7 +27,7 @@ def on_reload(json_path):
             last_page=pages_length,
             pages=range(1, pages_length + 1)
         )
-        with open(f'pages/index{page}.html', 'w', encoding="utf8") as file:
+        with open(f'pages/index{page}.html', 'w', encoding='utf8') as file:
             file.write(rendered_page)
 
 

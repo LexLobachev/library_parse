@@ -21,7 +21,7 @@ def get_page_html(url):
 def parse_book_page(book_html, url):
     soup = BeautifulSoup(book_html, 'lxml')
 
-    selector = "td.ow_px_td h1"
+    selector = 'td.ow_px_td h1'
     book_title_tag = soup.select_one(selector)
     book_title = book_title_tag.text.split('::')
     book_title_text = book_title[0].strip()
@@ -29,15 +29,14 @@ def parse_book_page(book_html, url):
     book_author_tag = book_title_tag.find('a')
     book_author = book_author_tag.text
 
-    selector = "div.bookimage img[src]"
+    selector = 'div.bookimage img[src]'
     book_img = soup.select_one(selector)['src']
     book_img_link = urljoin(url, book_img)
-
-    selector = "#content span.black"
+    selector = '#content span.black'
     book_comment_tags = soup.select(selector)
     book_comments = [comment.text for comment in book_comment_tags]
 
-    selector = "span.d_book a"
+    selector = 'span.d_book a'
     book_genre_tags = soup.select(selector)
     book_genres = [genre.text for genre in book_genre_tags]
 
@@ -103,7 +102,7 @@ def main():
                     book_html = get_page_html(book_url)
                     break
                 except requests.exceptions.ConnectionError:
-                    print("No internet, will try to reconnect in 10 seconds")
+                    print('No internet, will try to reconnect in 10 seconds')
                     time.sleep(10)
             book = parse_book_page(book_html, book_url)
             book_name = book['book_title']
@@ -113,14 +112,14 @@ def main():
                     download_txt(url, book_id, book_name)
                     break
                 except requests.exceptions.ConnectionError:
-                    print("No internet, will try to reconnect in 10 seconds")
+                    print('No internet, will try to reconnect in 10 seconds')
                     time.sleep(10)
             while True:
                 try:
                     download_image(book_img_url)
                     break
                 except requests.exceptions.ConnectionError:
-                    print("No internet, will try to reconnect in 10 seconds")
+                    print('No internet, will try to reconnect in 10 seconds')
                     time.sleep(10)
         except requests.exceptions.HTTPError:
             logging.error(f'Something went wrong with book {book_id}')
