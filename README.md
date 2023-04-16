@@ -72,3 +72,9 @@ $ python3 parse_tululu_category.py --json_path some_path
 $ python3 render_website.py
 ```
 
+If you want to change `*.json` filepath, just type `--json_path `(e.g. `--dest_folder some_path`):
+
+```bash
+$ python3 render_website.py --json_path some_path
+```
+

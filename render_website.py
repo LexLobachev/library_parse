@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 
@@ -6,7 +7,7 @@ from livereload import Server
 from more_itertools import chunked
 
 
-def on_reload():
+def on_reload(json_path):
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
@@ -14,7 +15,7 @@ def on_reload():
 
     template = env.get_template('template.html')
 
-    with open("books.json", "r") as file:
+    with open(json_path, "r") as file:
         books = file.read()
 
     books = json.loads(books)
@@ -34,7 +35,12 @@ def on_reload():
 
 
 def main():
-    on_reload()
+    parser = argparse.ArgumentParser(description='Где находится ваш json файл')
+    parser.add_argument('--json_path', default='books.json', help='Где находится *.json файл?',
+                        type=str)
+    args = parser.parse_args()
+    json_path = args.json_path
+    on_reload(json_path)
     server = Server()
     server.watch('template.html', on_reload)
     server.serve(root='.')
