@@ -18,11 +18,11 @@
     <ul class="pagination justify-content-center p-3">
       {% if current_page == 1 %}
       <li class="page-item disabled">
-        <a class="page-link" tabindex="-1" href="#">Previous</a>
+        <a class="page-link" tabindex="-1" href="#">Предыдущая</a>
       </li>
       {% else %}
       <li class="page-item">
-        <a class="page-link" href="index{{current_page-1}}.html">Previous</a>
+        <a class="page-link" href="index{{current_page-1}}.html">Предыдущая</a>
       </li>
       {% endif %}
 
@@ -40,11 +40,11 @@
 
       {% if current_page == last_page %}
       <li class="page-item disabled">
-        <a class="page-link" tabindex="-1" href="#">Next</a>
+        <a class="page-link" tabindex="-1" href="#">Следующая</a>
       </li>
       {% else %}
       <li class="page-item">
-        <a class="page-link" href="index{{current_page+1}}.html">Next</a>
+        <a class="page-link" href="index{{current_page+1}}.html">Следующая</a>
       </li>
       {% endif %}
     </ul>
