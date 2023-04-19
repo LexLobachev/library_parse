@@ -18,14 +18,14 @@ def on_reload(json_path):
     book_descriptions = json.load(open(json_path))
     chunked_book_descriptions = list(chunked(book_descriptions, 20))
     os.makedirs('pages', exist_ok=True)
-    pages_length = len(chunked_book_descriptions)
+    total_pages_number = len(chunked_book_descriptions)
 
     for page, book_descriptions in enumerate(chunked_book_descriptions, 1):
         rendered_page = template.render(
             book_descriptions=book_descriptions,
             current_page=page,
-            last_page=pages_length,
-            pages=range(1, pages_length + 1)
+            last_page=total_pages_number,
+            pages=range(1, total_pages_number + 1)
         )
         with open(f'pages/index{page}.html', 'w', encoding='utf8') as file:
             file.write(rendered_page)
