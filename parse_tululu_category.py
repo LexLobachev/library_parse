@@ -86,7 +86,7 @@ def main():
                 while True:
                     try:
                         folder = os.path.join(dest_folder, 'books/')
-                        book_filepath = download_txt(url, book_id, book_name, folder)
+                        book_filepath = os.path.join("..", download_txt(url, book_id, book_name, folder))
                         break
                     except requests.exceptions.ConnectionError:
                         print('No internet, will try to reconnect in 10 seconds')
@@ -97,7 +97,7 @@ def main():
                 while True:
                     try:
                         folder = os.path.join(dest_folder, 'images/')
-                        img_filepath = download_image(book_img_url, folder)
+                        img_filepath = os.path.join("..", download_image(book_img_url, folder))
                         break
                     except requests.exceptions.ConnectionError:
                         print('No internet, will try to reconnect in 10 seconds"')
