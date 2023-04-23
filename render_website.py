@@ -37,9 +37,9 @@ def main():
                         type=str)
     args = parser.parse_args()
     json_path = args.json_path
-    on_reload(json_path)
+    reload = lambda: on_reload(json_path)
     server = Server()
-    server.watch('template.html', on_reload)
+    server.watch('template.html', reload)
     server.serve(root='.')
 
 
