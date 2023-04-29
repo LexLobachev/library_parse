@@ -54,7 +54,8 @@ If you don't want to parse images or books, just type `--skip_imgs` and `skip_tx
 $ python3 parse_tululu_category.py --skip_imgs --skip_txt
 ```
 
-If you want to change the destination folder for all parsed information, just type `--dest_folder YOUR_DEST`(e.g. `--dest_folder some_folder`):
+If you want to change the destination folder for all parsed information, just type `--dest_folder YOUR_DEST`(
+e.g. `--dest_folder some_folder`):
 
 ```bash
 $ python3 parse_tululu_category.py --dest_folder some_folder
@@ -80,8 +81,29 @@ $ python3 render_website.py --json_path some_path
 
 ## Run your offline library
 
-```bash
-$ python3 render_website.py
-```
+- Download code 
+- Go to the project folder 
+- Python 3.11 should already be installed 
+- Create a virtual environment and enter it:
 
-Then to see your library locally follow the [link](http://127.0.0.1:5500/pages/index1.html)
+   ```bash
+   $ python3 -m venv venv
+   $ source venv/bin/activate
+   ```
+- Then use pip to install the dependencies:
+   
+   ```bash
+   $ pip3 install -r requirements.txt
+   ```
+
+  - You can download from the [Tululu](https://tululu.org/) web-library books(for more detailed instructions see above)
+    ```bash
+    $ python3 parse_tululu_category.py
+    ```
+
+- Run the site with the command
+   ```bash
+   $ python3 render_website.py
+   ```
+
+- Then to see your library locally follow the [link](http://127.0.0.1:5500/pages/index1.html)
