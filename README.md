@@ -79,11 +79,11 @@ If you want to change `*.json` filepath, just type `--json_path `(e.g. `--dest_f
 $ python3 render_website.py --json_path some_path
 ```
 
-## Run your offline library
+## Run your library locally
 
-- Download code 
-- Go to the project folder 
-- Python 3.11 should already be installed 
+- Download code
+- Go to the project folder
+- Python 3.11 should already be installed
 - Create a virtual environment and enter it:
 
    ```bash
@@ -91,15 +91,16 @@ $ python3 render_website.py --json_path some_path
    $ source venv/bin/activate
    ```
 - Then use pip to install the dependencies:
-   
+
    ```bash
    $ pip3 install -r requirements.txt
    ```
 
-  - You can download from the [Tululu](https://tululu.org/) web-library books(for more detailed instructions see above)
-    ```bash
-    $ python3 parse_tululu_category.py
-    ```
+    - You can download from the [Tululu](https://tululu.org/) web-library books(for more detailed instructions see
+      above)
+      ```bash
+      $ python3 parse_tululu_category.py
+      ```
 
 - Run the site with the command
    ```bash
@@ -107,3 +108,8 @@ $ python3 render_website.py --json_path some_path
    ```
 
 - Then to see your library locally follow the [link](http://127.0.0.1:5500/pages/index1.html)
+
+## Open offline pages
+
+To open our page in the browser, hover over the file in the `pages` folder, right-click, select "Open with" in the window that opens, and
+select the browser we use.
